@@ -42,5 +42,23 @@ namespace ConsulClent.Controllers
 
         }
 
+        // GET api/values/redisconfig
+        [HttpGet("{key}")]
+        public ActionResult<string> Value(string key)
+        {
+            using (var consul = new Consul.ConsulClient(c =>
+            {
+                c.Address = new Uri("http://127.0.0.1:8500"); //Consul地址
+            }))
+            {
+                var response = consul.KV.Get(key).Result.Response;
+                if (response != null)
+                {
+                    return Encoding.UTF8.GetString(response.Value);
+                }
+                return "";
+            }
+
+        }
     }
 }
